@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.kaishengit.mapper.UserMapper">
+
+	<sql id="allColumns">
+		id,user_name,password,address,dept_id
+	</sql>
+	<select id="findById" parameterType="int" resultType="User">
+		select
+		<include refid="allColumns" />
+		from t_user where id=#{id}
+	</select>
+
+    <select id="findAll" resultType="User">
+		select <include refid="allColumns" /> from t_user
+	</select>
+
+    <select id="findAllLoadDept" resultType="User">
+		select t_user.id,user_name,address,password,dept_id,
+		t_dept.id as `dept.id`,t_dept.dept_name as `dept.deptName` 
+		from t_user,t_dept
+		where t_user.dept_id=t_dept.id;
+	</select>
+
+	<delete id="deleteByIds" parameterType="list" >
+		delete from t_user where id IN
+		<foreach collection="list">
+			
+		</foreach>
+	</delete>
+    <!-- 	
+        resultMap结果集映射
+        <select id="findAllLoadDept" resultMap="userMap">
+            select t_user.id,user_name,address,password,dept_id,dept_name
+            from t_user,t_dept where t_user.dept_id=t_dept.id;
+        </select>
+        <resultMap type="User" id="userMap">
+            <id column="id" property="id"/>
+            <result column="user_name" property="userName"/>
+            <result column="address" property="address"/>
+            <result column="password" property="password"/>
+            <result column="dept_id" property="deptId"/>
+            <association property="dept" javaType="Dept">
+                <id column="dept_id" property="id"/>
+                <result column="dept_name" property="deptName"/>
+            </association>
+        </resultMap> -->
+
+    <insert id="insert" parameterType="User">
+		insert into t_user (user_name,password,address) values (#{userName},#{password},#{address})
+	</insert>
+
+    <update id="update" parameterType="User">
+		update t_user set user_name=#{userName},password=#{password},address=#{address} where id=#{id}
+	</update>
+
+    <delete id="delete" parameterType="int">
+		delete form t_user where id=#{id}
+	</delete>
+</mapper>
+
